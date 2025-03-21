@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Homepage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-green-600:hover { background-color: #4CAF50; }
+        .bg-red-500:hover { background-color: #FF5733; }
+        .carousel-container {
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel-item {
+            min-width: 20%;
+        }
+        @media (max-width: 640px) {
+            .carousel-item {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md p-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold">Recipe Hub</h1>
+    </nav>
+    
+    <!-- Modal for Veg/Non-Veg Selection -->
+    <div id="selectionModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white p-6 rounded-lg text-center shadow-lg">
+            <h2 class="text-lg font-bold mb-4">Select Recipe Type</h2>
+            <button id="vegBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg">Veg</button>
+            <button id="nonVegBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg ml-4">Non-Veg</button>
+        </div>
+    </div>
+    
+
+
+    <!-- Banner Carousel -->
+    <div class="relative w-full max-h-[500px] overflow-hidden">
+        <div id="bannerCarousel" class="flex transition-transform duration-500">
+            <img src="https://www.recipetineats.com/tachyon/2022/12/Chicken-sandwiches_5.jpg" class="w-full max-h-[500px] object-cover" alt="Banner 1">
+            <img src="https://images.immediate.co.uk/production/volatile/sites/30/2020/10/Secret-Veg-Cheeseburgers-c981dd6.jpg" class="w-full max-h-[500px] object-cover" alt="Banner 2">
+            <img src="https://cdn.loveandlemons.com/wp-content/uploads/2023/01/grilled-cheese-sandwich-835x1024.jpg" class="w-full max-h-[500px] object-cover" alt="Banner 3">
+        </div>
+        <button id="prevBtn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full">◀</button>
+        <button id="nextBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full">▶</button>
+    </div>
+
+    <!-- Recipe Sections -->
+
+    
+    <div class="p-6">
+        <h2 class="text-xl font-bold">Veg Recipes</h2>
+        <div class="carousel-container">
+            <div id="vegRecipes" class="carousel"></div>
+        </div>
+    </div>
+    <div id="nonVegSection" class="p-6">
+        <h2 class="text-xl font-bold">Non-Veg Recipes</h2>
+        <div class="carousel-container">
+            <div id="nonVegRecipes" class="carousel"></div>
+        </div>
+    </div>
+    <div class="p-6">
+        <h2 class="text-xl font-bold">Low Calorie Recipes</h2>
+        <div class="carousel-container">
+            <div id="lowCalorieRecipes" class="carousel"></div>
+        </div>
+    </div>
+    <div class="p-6">
+        <h2 class="text-xl font-bold">All Recipes</h2>
+        <div class="carousel-container">
+            <div id="allRecipes" class="carousel"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const modal = document.getElementById("selectionModal");
+            const nonVegSection = document.getElementById("nonVegSection");
+            let selectedType = "veg";
+
+            modal.classList.remove("hidden");
+
+            document.getElementById("vegBtn").addEventListener("click", () => {
+                modal.classList.add("hidden");
+                nonVegSection.classList.add("hidden");
+                selectedType = "veg";
+                fetchRecipes();
+            });
+
+            document.getElementById("nonVegBtn").addEventListener("click", () => {
+                modal.classList.add("hidden");
+                nonVegSection.classList.remove("hidden");
+                selectedType = "non-veg";
+                fetchRecipes();
+            });
+
+            function fetchRecipes() {
+    fetch("http://localhost:5000/recipes")
+        .then(res => res.json())
+        .then(data => {
+            const vegContainer = document.getElementById("vegRecipes");
+            const nonVegContainer = document.getElementById("nonVegRecipes");
+            const allContainer = document.getElementById("allRecipes");
+            const lowCalorieContainer = document.getElementById("lowCalorieRecipes");
+
+            vegContainer.innerHTML = "";
+            nonVegContainer.innerHTML = "";
+            allContainer.innerHTML = "";
+            lowCalorieContainer.innerHTML = "";
+
+            let filteredRecipes = data.filter(recipe => recipe.type === selectedType);
+            
+            // Display based on selection
+            if (selectedType === "veg") {
+                createCarousel(vegContainer, filteredRecipes);
+                createCarousel(lowCalorieContainer, filteredRecipes.filter(r => r.calories < 200));
+                createCarousel(allContainer, filteredRecipes);
+                nonVegContainer.parentElement.classList.add("hidden");
+            } else {
+                createCarousel(nonVegContainer, filteredRecipes);
+                createCarousel(lowCalorieContainer, filteredRecipes.filter(r => r.calories < 200));
+                createCarousel(allContainer, filteredRecipes);
+                vegContainer.parentElement.classList.add("hidden");
+            }
+        });
+}
+
+
+            function createCarousel(container, recipes) {
+                if (recipes.length > 10) {
+                    recipes = [...recipes, ...recipes].slice(0, 10); // Loop effect
+                }
+                recipes.forEach(recipe => {
+                    const card = document.createElement("div");
+                    card.classList.add("carousel-item", "p-4", "bg-white", "shadow-md", "rounded-lg", "cursor-pointer");
+                    card.innerHTML = `
+                        <img src="${recipe.image}" class="w-full h-40 object-cover rounded-md" alt="Recipe">
+                        <h3 class="text-lg font-bold mt-2">${recipe.name}</h3>
+                        <p class="${recipe.type === 'veg' ? 'text-green-600' : 'text-red-500'} font-semibold">${recipe.type.toUpperCase()}</p>
+                        <p>🔥 ${recipe.calories} Calories | ⏱️ ${recipe.prepTime} min</p>
+                    `;
+                    card.addEventListener("click", () => {
+                        window.location.href = `display.html?id=${recipe.recipeId}`;
+                    });
+                    container.appendChild(card);
+                });
+
+                let scrollAmount = 0;
+                setInterval(() => {
+                    scrollAmount += 100;
+                    if (scrollAmount >= container.scrollWidth / 2) {
+                        scrollAmount = 0;
+                    }
+                    container.style.transform = `translateX(-${scrollAmount}px)`;
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

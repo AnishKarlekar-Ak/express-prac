@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recipe Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Customizing button hover effects */
+    .bg-green-600:hover {
+      background-color: #4CAF50;
+    }
+    .bg-red-500:hover {
+      background-color: #FF5733;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
+    <!-- Added an id="recipeForm" for easier JS selection -->
+    <form id="recipeForm" class="space-y-6">
+      <h2 class="text-3xl font-bold text-center text-green-600">Recipe Form</h2>
+
+      <!-- Recipe Name -->
+      <div class="flex flex-col">
+        <label for="name" class="text-lg font-medium text-gray-700">Recipe Name</label>
+        <input type="text" id="name" name="name" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required />
+      </div>
+
+      <!-- Recipe ID -->
+      <div class="flex flex-col">
+        <label for="recipeId" class="text-lg font-medium text-gray-700">Recipe ID</label>
+        <input type="text" id="recipeId" name="recipeId" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required />
+      </div>
+
+      <!-- Type -->
+      <div class="flex flex-col">
+        <label for="type" class="text-lg font-medium text-gray-700">Type</label>
+        <select id="type" name="type" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required>
+          <option value="veg">Veg</option>
+          <option value="non-veg">Non-Veg</option>
+          <option value="vegan">Vegan</option>
+          <option value="keto">Keto</option>
+          <option value="gluten-free">Gluten-Free</option>
+        </select>
+      </div>
+
+      <!-- Tags -->
+      <div class="flex flex-col">
+        <label for="tags" class="text-lg font-medium text-gray-700">Tags</label>
+        <input type="text" id="tags" name="tags" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter tags separated by commas" />
+      </div>
+
+      <!-- Ingredients -->
+      <div class="flex flex-col">
+        <label for="ingredients" class="text-lg font-medium text-gray-700">Ingredients</label>
+        <div id="ingredients-section" class="space-y-4">
+          <div class="flex space-x-4 items-center">
+            <input type="number" id="ingredient-quantity" name="ingredient-quantity" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="1" required />
+            <input type="text" id="ingredient-unit" name="ingredient-unit" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Piece" required />
+            <input type="text" id="ingredient-name" name="ingredient-name" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Tomato" required />
+            <button type="button" class="bg-red-500 text-white p-3 rounded-md" onclick="addIngredient()">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cholesterol Level -->
+      <div class="flex flex-col">
+        <label for="cholesterolLevel" class="text-lg font-medium text-gray-700">Cholesterol Level</label>
+        <select id="cholesterolLevel" name="cholesterolLevel" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+
+      <!-- Fat Level -->
+      <div class="flex flex-col">
+        <label for="fatLevel" class="text-lg font-medium text-gray-700">Fat Level</label>
+        <select id="fatLevel" name="fatLevel" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+
+      <!-- Calories -->
+      <div class="flex flex-col">
+        <label for="calories" class="text-lg font-medium text-gray-700">Calories</label>
+        <input type="number" id="calories" name="calories" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+
+      <!-- Cuisine -->
+      <div class="flex flex-col">
+        <label for="cuisine" class="text-lg font-medium text-gray-700">Cuisine</label>
+        <input type="text" id="cuisine" name="cuisine" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+
+      <!-- Difficulty Level -->
+      <div class="flex flex-col">
+        <label for="difficultyLevel" class="text-lg font-medium text-gray-700">Difficulty Level</label>
+        <select id="difficultyLevel" name="difficultyLevel" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+      </div>
+
+      <!-- Image URL -->
+      <div class="flex flex-col">
+        <label for="image" class="text-lg font-medium text-gray-700">Image URL</label>
+        <input type="url" id="image" name="image" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+
+      <!-- Prep Method -->
+      <div class="flex flex-col">
+        <label for="prepMethod" class="text-lg font-medium text-gray-700">Preparation Method</label>
+        <input type="text" id="prepMethod" name="prepMethod" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+
+      <!-- Storage Instructions -->
+      <div class="flex flex-col">
+        <label for="storageInstructions" class="text-lg font-medium text-gray-700">Storage Instructions</label>
+        <input type="text" id="storageInstructions" name="storageInstructions" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+
+      <!-- Allergens -->
+      <div class="flex flex-col">
+        <label for="allergens" class="text-lg font-medium text-gray-700">Allergens</label>
+        <input type="text" id="allergens" name="allergens" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter allergens separated by commas" />
+      </div>
+
+      <!-- Instructions -->
+      <div class="flex flex-col">
+        <label for="instructions" class="text-lg font-medium text-gray-700">Instructions</label>
+        <div id="instructions-section" class="space-y-4">
+          <div class="flex items-center space-x-4">
+            <input type="text" id="instruction" name="instruction" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Step 1" required />
+            <button type="button" class="bg-red-500 text-white p-3 rounded-md" onclick="addInstruction()">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prep Time -->
+      <div class="flex flex-col">
+        <label for="prepTime" class="text-lg font-medium text-gray-700">Preparation Time (in minutes)</label>
+        <input type="number" id="prepTime" name="prepTime" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required />
+      </div>
+
+      <!-- Cook Time -->
+      <div class="flex flex-col">
+        <label for="cookTime" class="text-lg font-medium text-gray-700">Cook Time (in minutes)</label>
+        <input type="number" id="cookTime" name="cookTime" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required />
+      </div>
+
+      <!-- Total Time -->
+      <div class="flex flex-col">
+        <label for="totalTime" class="text-lg font-medium text-gray-700">Total Time (in minutes)</label>
+        <input type="number" id="totalTime" name="totalTime" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+
+      <!-- Servings -->
+      <div class="flex flex-col">
+        <label for="servings" class="text-lg font-medium text-gray-700">Servings</label>
+        <input type="number" id="servings" name="servings" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required />
+      </div>
+
+      <!-- Dietary Restrictions -->
+      <div class="flex flex-col">
+        <label for="dietaryRestrictions" class="text-lg font-medium text-gray-700">Dietary Restrictions</label>
+        <input type="text" id="dietaryRestrictions" name="dietaryRestrictions" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter dietary restrictions separated by commas" />
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex justify-center">
+        <button type="submit" class="bg-green-600 text-white p-4 rounded-md hover:bg-green-700">Submit Recipe</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Function to add another ingredient row
+    function addIngredient() {
+      let ingredientSection = document.getElementById('ingredients-section');
+      let ingredientField = `
+        <div class="flex space-x-4 items-center">
+          <input type="number" name="ingredient-quantity" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="1" />
+          <input type="text" name="ingredient-unit" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Piece" />
+          <input type="text" name="ingredient-name" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Tomato" />
+          <button type="button" class="bg-red-500 text-white p-3 rounded-md" onclick="removeElement(this)">-</button>
+        </div>
+      `;
+      ingredientSection.insertAdjacentHTML('beforeend', ingredientField);
+    }
+
+    // Function to add another instruction row
+    function addInstruction() {
+      let instructionsSection = document.getElementById('instructions-section');
+      let instructionField = `
+        <div class="flex items-center space-x-4">
+          <input type="text" name="instruction" class="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Step" required />
+          <button type="button" class="bg-red-500 text-white p-3 rounded-md" onclick="removeElement(this)">-</button>
+        </div>
+      `;
+      instructionsSection.insertAdjacentHTML('beforeend', instructionField);
+    }
+
+    // Function to remove a dynamically added element
+    function removeElement(button) {
+      button.closest('div').remove();
+    }
+
+    // Form submission handler to POST data to the database
+    document.getElementById('recipeForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Gather form data into an object
+      const recipeData = {
+        name: document.getElementById('name').value,
+        recipeId: document.getElementById('recipeId').value,
+        type: document.getElementById('type').value,
+        tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(Boolean),
+        cholesterolLevel: document.getElementById('cholesterolLevel').value,
+        fatLevel: document.getElementById('fatLevel').value,
+        calories: parseInt(document.getElementById('calories').value) || undefined,
+        cuisine: document.getElementById('cuisine').value,
+        difficultyLevel: document.getElementById('difficultyLevel').value,
+        image: document.getElementById('image').value,
+        prepMethod: document.getElementById('prepMethod').value,
+        storageInstructions: document.getElementById('storageInstructions').value,
+        allergens: document.getElementById('allergens').value.split(',').map(item => item.trim()).filter(Boolean),
+        prepTime: parseInt(document.getElementById('prepTime').value),
+        cookTime: parseInt(document.getElementById('cookTime').value),
+        totalTime: parseInt(document.getElementById('totalTime').value) || undefined,
+        servings: parseInt(document.getElementById('servings').value),
+        dietaryRestrictions: document.getElementById('dietaryRestrictions').value.split(',').map(item => item.trim()).filter(Boolean),
+        ingredients: [],
+        instructions: []
+      };
+
+      // Gather ingredients data
+      const ingredientQuantities = document.querySelectorAll('[name="ingredient-quantity"]');
+      const ingredientUnits = document.querySelectorAll('[name="ingredient-unit"]');
+      const ingredientNames = document.querySelectorAll('[name="ingredient-name"]');
+
+      for (let i = 0; i < ingredientQuantities.length; i++) {
+        const quantity = ingredientQuantities[i].value;
+        const unit = ingredientUnits[i].value;
+        const name = ingredientNames[i].value;
+        if (quantity && unit && name) {
+          recipeData.ingredients.push({
+            quantity: quantity + ' ' + unit,
+            name: name
+          });
+        }
+      }
+
+      // Gather instructions data
+      const instructionEls = document.querySelectorAll('[name="instruction"]');
+      instructionEls.forEach((input, index) => {
+        if (input.value) {
+          recipeData.instructions.push({
+            step: index + 1,
+            description: input.value
+          });
+        }
+      });
+
+      // POST the data to your server (adjust URL if needed)
+      try {
+        const response = await fetch('http://localhost:5000/recipes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(recipeData)
+        });
+        if (response.ok) {
+          alert('Recipe submitted successfully!');
+          document.getElementById('recipeForm').reset();
+        } else {
+          const errorData = await response.json();
+          alert('Error: ' + errorData.error);
+        }
+      } catch (error) {
+        console.error('Error posting recipe:', error);
+        alert('Error posting recipe');
+      }
+    });
+  </script>
+</body>
+</html>

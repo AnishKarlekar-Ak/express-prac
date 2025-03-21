@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+
+    <div id="recipeContainer" class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6 transition-all">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4" id="title"></h1>
+        
+        <div class="flex flex-col md:flex-row gap-6">
+            <img id="image" class="w-full md:w-1/3 rounded-lg shadow-md" src="" alt="Recipe Image">
+            
+            <div class="w-full">
+                <p class="text-lg font-semibold text-gray-600">
+                    Type: <span id="type" class="text-gray-800"></span>
+                </p>
+                <p class="text-lg font-semibold text-gray-600">
+                    Cuisine: <span id="cuisine" class="text-gray-800"></span>
+                </p>
+                <p class="text-lg font-semibold text-gray-600">
+                    Difficulty: <span id="difficultyLevel" class="text-gray-800"></span>
+                </p>
+                <p class="text-lg font-semibold text-gray-600">
+                    🔥 Calories: <span id="calories" class="text-gray-800"></span> kcal
+                </p>
+                <p class="text-lg font-semibold text-gray-600">
+                    ⏳ Prep Time: <span id="prepTime" class="text-gray-800"></span> mins
+                </p>
+                <p class="text-lg font-semibold text-gray-600">
+                    ⏳ Cook Time: <span id="cookTime" class="text-gray-800"></span> mins
+                </p>
+                <p class="text-lg font-semibold text-gray-600">
+                    ⏳ Total Time: <span id="totalTime" class="text-gray-800"></span> mins
+                </p>
+                <p class="text-lg font-semibold text-gray-600">
+                    Servings: <span id="servings" class="text-gray-800"></span>
+                </p>
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-semibold mt-6">Ingredients</h2>
+        <ul id="ingredients" class="list-disc pl-5 text-gray-700"></ul>
+
+        <h2 class="text-2xl font-semibold mt-6">Instructions</h2>
+        <ol id="instructions" class="list-decimal pl-5 text-gray-700"></ol>
+
+        <p class="text-lg font-semibold mt-6 text-gray-600">
+            Storage Instructions: <span id="storageInstructions" class="text-gray-800"></span>
+        </p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const recipeId = urlParams.get('id');
+
+            if (!recipeId) {
+                alert("Recipe ID is missing!");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/recipes/${recipeId}`);
+                const recipe = await response.json();
+
+                if (!recipe) {
+                    alert("Recipe not found!");
+                    return;
+                }
+
+                document.getElementById("title").textContent = recipe.name;
+                document.getElementById("type").textContent = recipe.type;
+                document.getElementById("cuisine").textContent = recipe.cuisine || "N/A";
+                document.getElementById("difficultyLevel").textContent = recipe.difficultyLevel || "N/A";
+                document.getElementById("calories").textContent = recipe.calories || "N/A";
+                document.getElementById("prepTime").textContent = recipe.prepTime || "N/A";
+                document.getElementById("cookTime").textContent = recipe.cookTime || "N/A";
+                document.getElementById("totalTime").textContent = recipe.totalTime || (recipe.prepTime + recipe.cookTime) || "N/A";
+                document.getElementById("servings").textContent = recipe.servings || "N/A";
+                document.getElementById("storageInstructions").textContent = recipe.storageInstructions || "N/A";
+                document.getElementById("image").src = recipe.image || "https://via.placeholder.com/300";
+
+                const ingredientsList = document.getElementById("ingredients");
+                recipe.ingredients.forEach(ing => {
+                    const li = document.createElement("li");
+                    li.textContent = `${ing.name} - ${ing.quantity}`;
+                    ingredientsList.appendChild(li);
+                });
+
+                const instructionsList = document.getElementById("instructions");
+                recipe.instructions.forEach(step => {
+                    const li = document.createElement("li");
+                    li.textContent = step.description;
+                    instructionsList.appendChild(li);
+                });
+
+                // Apply box shadow based on recipe type
+                const container = document.getElementById("recipeContainer");
+                if (recipe.type.toLowerCase() === "veg") {
+                    container.classList.add("shadow-green-500");
+                } else if (recipe.type.toLowerCase() === "non-veg") {
+                    container.classList.add("shadow-red-500");
+                }
+
+            } catch (error) {
+                console.error("Error fetching recipe:", error);
+            }
+        });
+    </script>
+
+</body>
+</html>
